@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oil-Twin AI — Nodal Analysis & Production Optimization</title>
+  <meta name="description" content="Browser-based nodal-analysis simulator for production engineers: model IPR/VLP, gas lift, ESP and choke performance with interactive what-if scenarios.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+  <!-- Application Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <a href="#" class="brand-logo" onclick="window.App.Navbar.setSection('home'); return false;">
+          <div class="logo-badge">OT</div>
+          <span class="brand-name">Oil-Twin AI</span>
+        </a>
+        <button id="btn-sidebar-collapse" class="sidebar-toggle-btn" title="Toggle Sidebar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="nav-menu">
+        <button id="nav-home" class="nav-item active">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </div>
+          <span>Home - all tools</span>
+        </button>
+
+        <div class="nav-section-title">Nodal Simulation</div>
+
+        <button id="nav-live" class="nav-item">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <span>Live well simulator</span>
+        </button>
+
+        <div class="nav-section-title">Scenarios & Lift</div>
+
+        <button id="nav-free_scenarios" class="nav-item">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v18M18 9l-6-6-6 6M6 19h12"></path>
+            </svg>
+          </div>
+          <span>Free-flowing scenarios</span>
+        </button>
+
+        <button id="nav-gl_scenarios" class="nav-item">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242M8 19v1M12 17v5M16 19v1"></path>
+            </svg>
+          </div>
+          <span>Gas-lift scenarios</span>
+        </button>
+
+        <button id="nav-esp_scenarios" class="nav-item">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="8"></circle>
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+            </svg>
+          </div>
+          <span>ESP scenarios</span>
+        </button>
+
+        <div class="nav-section-title">Specialized Tools</div>
+
+        <button id="nav-gl_unloading" class="nav-item">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 21V4M16 21V4"></path>
+              <rect x="6" y="7" width="4" height="3" rx="1"></rect>
+              <rect x="14" y="11" width="4" height="3" rx="1"></rect>
+              <rect x="6" y="15" width="4" height="3" rx="1"></rect>
+            </svg>
+          </div>
+          <span>Gas-lift unloading</span>
+        </button>
+
+        <button id="nav-srp" class="nav-item">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 20.5h18M8 20.5 10 10.8 12 20.5M4.6 12.4 10 10.8 17 13.3"></path>
+              <circle cx="17" cy="16" r="2.5"></circle>
+            </svg>
+          </div>
+          <span>Sucker-rod pump (SRP)</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="nav-settings" class="nav-item">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </div>
+          <span>Settings</span>
+        </button>
+
+        <button id="nav-about" class="nav-item">
+          <div class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </div>
+          <span>About & Principles</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="content-area">
+      <!-- Topbar Header -->
+      <header class="topbar">
+        <div class="topbar-title-group">
+          <h2 id="topbar-section-title" class="topbar-title">Overview - All Simulators</h2>
+          <span class="topbar-badge">v2.4 Pro</span>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="unit-toggle-btn" class="unit-switch-btn" title="Toggle Unit System">
+            Units: Field (psi, bbl)
+          </button>
+          <button class="btn btn-secondary" style="padding: 5px 12px; font-size: 12px;" onclick="window.print()">
+            🖨 Export
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Dynamic View Container -->
+      <div id="main-content" class="main-view-container"></div>
+    </main>
+  </div>
+
+  <!-- About Modal -->
+  <div id="about-modal" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 style="color: #F0F6FC; font-size: 18px; font-weight: 700;">About Oil-Twin AI</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px; color: #8B949E; line-height: 1.6; font-size: 13.5px;">
+        <p><strong>Oil-Twin AI</strong> is an interactive digital twin, training, and nodal analysis engineering platform designed for petroleum production engineers, reservoir analysts, and students.</p>
+        
+        <h4 style="color: #F0F6FC; font-size: 14px; margin-top: 6px;">Key Physics Foundations:</h4>
+        <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <li><strong>IPR (Inflow Performance Relationship):</strong> Darcy linear model above bubble point ($P_b$), Vogel two-phase quadratic model below bubble point.</li>
+          <li><strong>VLP (Vertical Lift Performance):</strong> Modified Beggs & Brill and Ansari multiphase correlations accounting for liquid holdup, mixture density, and friction loss across Bubble, Slug, Churn, and Mist regimes.</li>
+          <li><strong>Choke Hydraulics:</strong> Gilbert and Sachdeva multiphase orifice equations evaluating critical vs subcritical flow cutoffs ($P_{down}/P_{up} \le 0.546$).</li>
+          <li><strong>Artificial Lift:</strong> Continuous Gas Lift (gradient relief vs over-injection friction) and Multi-Stage ESP (Affinity laws $Q \propto f, H \propto f^2, P \propto f^3$, free gas derating).</li>
+          <li><strong>Sucker-Rod Pumping:</strong> Kinematic beam pump linkage motion, rod string elasticity, and surface/downhole dynamometer card diagnostics.</li>
+        </ul>
+
+        <div style="padding: 12px; background: #0D1117; border-radius: 8px; border: 1px solid #30363D; margin-top: 8px;">
+          <span style="color: #388BFD; font-weight: 600;">Technical Reference:</span>
+          <p style="font-size: 12px; margin-top: 4px;">Brown, K.E., "The Technology of Artificial Lift Methods", PennWell Books; Beggs, H.D. & Brill, J.P., "A Study of Two-Phase Flow in Inclined Pipes", JPT.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 style="color: #F0F6FC; font-size: 18px; font-weight: 700;">Settings & Unit Systems</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px; color: #8B949E; font-size: 13.5px;">
+        <div class="param-group">
+          <div class="group-title">Unit System Selection</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #F0F6FC;">
+              <input type="radio" name="unit-radio" value="field" checked onchange="window.App.Navbar.toggleUnitSystem()">
+              <div>
+                <strong>Oilfield Customary Units</strong>
+                <div style="font-size: 11.5px; color: #6E7681;">psi, STB/d, MSCF/d, ft, in, °F, scf/STB</div>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #F0F6FC;">
+              <input type="radio" name="unit-radio" value="metric" onchange="window.App.Navbar.toggleUnitSystem()">
+              <div>
+                <strong>SI / Metric Units</strong>
+                <div style="font-size: 11.5px; color: #6E7681;">bar, m³/d, kSm³/d, m, mm, °C, Sm³/Sm³</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn btn-primary modal-close-btn" style="width: 100%;">Save & Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main ES Module Script -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

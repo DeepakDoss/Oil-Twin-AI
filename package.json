@@ -1,0 +1,24 @@
+{
+  "name": "oil-twin-ai",
+  "version": "2.4.0",
+  "description": "Oil-Twin AI: Browser-based nodal-analysis simulator and digital twin for petroleum production engineers: model IPR/VLP, gas lift, ESP, choke performance, and sucker-rod pump diagnostics.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -l 3000 .",
+    "dev": "npx serve -l 3000 .",
+    "preview": "npx serve -l 3000 ."
+  },
+  "keywords": [
+    "petroleum-engineering",
+    "nodal-analysis",
+    "vlp",
+    "ipr",
+    "gas-lift",
+    "esp",
+    "sucker-rod-pump",
+    "oil-and-gas",
+    "production-optimization"
+  ],
+  "author": "Vision APS / OIL-TWIN",
+  "license": "MIT"
+}
