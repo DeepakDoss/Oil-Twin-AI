@@ -1,7 +1,7 @@
 services:
   - type: static
     name: oil-twin-ai
-    buildCommand: ""
+    buildCommand: "echo 'Static site ready - no build step needed'"
     staticPublishPath: .
     routes:
       - type: rewrite
